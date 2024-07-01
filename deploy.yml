@@ -1,0 +1,27 @@
+- hosts: web
+  become: yes
+  tasks:
+    - name: Stop existing container
+      docker_container:
+        name: my-app
+        state: absent
+        force_kill: yes
+
+    - name: Remove old image
+      docker_image:
+        name: my-app
+        state: absent
+
+    - name: Pull new image
+      docker_image:
+        name: my-app
+        source: pull
+
+    - name: Start new container
+      docker_container:
+        name: my-app
+        image: my-app
+        state: started
+        ports:
+          - "3000:3000"
+
