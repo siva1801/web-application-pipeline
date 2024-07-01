@@ -1,8 +1,10 @@
-# Automated Deployment Pipeline with Docker, Jenkins, and Ansible
+# Automated Deployment Pipeline for a Web Application
 
 This README provides an overview and key steps for setting up an automated deployment pipeline using Docker, Jenkins, and Ansible on an Ubuntu EC2 instance.
 
 ## Overview
+
+This project demonstrates how to automate the deployment of a web application by integrating the following tools:
 
 - **Docker**: Used for containerizing the application.
 - **Jenkins**: Automates the build and deployment process.
@@ -52,7 +54,7 @@ This README provides an overview and key steps for setting up an automated deplo
 ## 4.Access Jenkins:
 
 - Open port 8080 in EC2 security group.
-- Access Jenkins at http://<your-ec2-instance-ip>:8080.
+- Access Jenkins at http://3.25.114.20:8080.
 
 ## 5.Unlock Jenkins:
  - Retrieve the initial admin password:
@@ -64,7 +66,7 @@ This README provides an overview and key steps for setting up an automated deplo
 
       sudo apt install ansible -y
   
-# 5. Configure Docker for Your Application
+# 5. Configure Docker for Application
 
 ## 1.Create Dockerfile:
 
@@ -114,8 +116,68 @@ This README provides an overview and key steps for setting up an automated deplo
       }
       }
 
+# 7. Create Ansible Playbooks
+
+## 1.Inventory File (inventory):
+
+    [web]
+    3.25.114.20 ansible_ssh_user=ubuntu
+
+## 2.Playbook (deploy.yml):
+
+    - hosts: web
+    become: yes
+    tasks:
+    - name: Stop existing container
+      docker_container:
+        name: my-app
+        state: absent
+        force_kill: yes
+
+    - name: Remove old image
+      docker_image:
+        name: my-app
+        state: absent
+
+    - name: Pull new image
+      docker_image:
+        name: my-app
+        source: pull
+
+    - name: Start new container
+      docker_container:
+        name: my-app
+        image: my-app
+        state: started
+        ports:
+          - "3000:3000"
+
+# 8. Configure Jenkins to Use Ansible
+
+## 1.Generate SSH Key:
+
+    ssh-keygen -t rsa -b 4096 -C "sivan7863@gmail.com"
+    ssh-copy-id -i ~/.ssh/id_rsa.pub ubuntu@3.25.114.20
+
+## 2.Add SSH Key to Jenkins:
+
+    Go to "Manage Jenkins" -> "Manage Credentials".
+    Add new credentials with ID my-ssh-credentials.
+
+# 9. Test Pipeline
+
+## 1.Commit and Push Changes:
+    git add inventory deploy.yml
+    git commit -m "Add Ansible inventory and playbook files"
+    git push origin main
+    
+## 2.Trigger a Build in Jenkins:
+
+- Go to Jenkins job and click "Build Now".
 
 
+
+    
 
 
 
