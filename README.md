@@ -57,7 +57,7 @@ This project demonstrates how to automate the deployment of a web application by
 #### 4.Access Jenkins:
 
 - Open port 8080 in EC2 security group.
-- Access Jenkins at http://3.25.114.20:8080.
+- Access Jenkins at http://52.64.66.166:8080.
 
 #### 5.Unlock Jenkins:
  - Retrieve the initial admin password:
@@ -124,7 +124,7 @@ This project demonstrates how to automate the deployment of a web application by
 #### 1.Inventory File (inventory):
 
     [web]
-    3.25.114.20 ansible_ssh_user=ubuntu
+    52.64.66.166 ansible_ssh_user=ubuntu
 
 #### 2.Playbook (deploy.yml):
 
