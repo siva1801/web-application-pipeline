@@ -22,7 +22,7 @@ This project demonstrates how to automate the deployment of a web application by
 
 2. **Update the Instance**:
    ```sh
-   sudo apt update && sudo apt upgrade -y
+   sudo apt update 
    
 # 2. Install Docker
 
