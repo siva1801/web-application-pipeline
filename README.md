@@ -2,7 +2,7 @@
 
 This README provides an overview and key steps for setting up an automated deployment pipeline using Docker, Jenkins, and Ansible on an Ubuntu EC2 instance.
 
-## Overview
+### Overview
 
 This project demonstrates how to automate the deployment of a web application by integrating the following tools:
 
@@ -24,51 +24,51 @@ This project demonstrates how to automate the deployment of a web application by
    ```sh
    sudo apt update 
    
-# 2. Install Docker
+### 2. Install Docker
 
-## 1.Install Docker:
+#### 1.Install Docker:
     sudo apt update
     sudo apt install docker.io -y
     
-## 2.Start and Enable Docker:
+#### 2.Start and Enable Docker:
     sudo systemctl start docker
     sudo systemctl enable docker
     
-### 3.Add User to Docker Group:
+#### 3.Add User to Docker Group:
     sudo usermod -aG docker ubuntu
 
-# 3. Install Jenkins
-##  1.Install Java (Jenkins dependency):
+### 3. Install Jenkins
+####  1.Install Java (Jenkins dependency):
     sudo apt install openjdk-11-jdk -y
 
-## 2.Add Jenkins Repository and Install Jenkins:
+#### 2.Add Jenkins Repository and Install Jenkins:
     curl -fsSL https://pkg.jenkins.io/debian/jenkins.io.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc
     echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
     sudo apt update
     sudo apt install jenkins -y
     
-## 3.Start and Enable Jenkins:
+#### 3.Start and Enable Jenkins:
     sudo systemctl start jenkins
     sudo systemctl enable jenkins
 
-## 4.Access Jenkins:
+#### 4.Access Jenkins:
 
 - Open port 8080 in EC2 security group.
 - Access Jenkins at http://3.25.114.20:8080.
 
-## 5.Unlock Jenkins:
+#### 5.Unlock Jenkins:
  - Retrieve the initial admin password:
 
            sudo cat /var/lib/jenkins/secrets/initialAdminPassword
    
-# 4. Install Ansible
+#### 4. Install Ansible
 - Install Ansible:
 
       sudo apt install ansible -y
   
-# 5. Configure Docker for Application
+### 5. Configure Docker for Application
 
-## 1.Create Dockerfile:
+#### 1.Create Dockerfile:
 
     FROM node:14
     WORKDIR /app
@@ -77,21 +77,21 @@ This project demonstrates how to automate the deployment of a web application by
     EXPOSE 3000
     CMD ["npm", "start"]
 
-## 2.Build and Run Docker Container:
+#### 2.Build and Run Docker Container:
 
     docker build -t my-app .
     docker run -p 3000:3000 my-app
 
-# 6. Set Up Jenkins Pipeline
+### 6. Set Up Jenkins Pipeline
 
-## 1.Install Plugins:
+#### 1.Install Plugins:
 
 - Docker
 - Git
 - Pipeline
 - Ansible
 
-## 2.Create Pipeline Job:
+#### 2.Create Pipeline Job:
 
 - Go to Jenkins dashboard -> New Item -> Pipeline.
 - Add the following pipeline script:
@@ -116,14 +116,14 @@ This project demonstrates how to automate the deployment of a web application by
       }
       }
 
-# 7. Create Ansible Playbooks
+### 7. Create Ansible Playbooks
 
-## 1.Inventory File (inventory):
+#### 1.Inventory File (inventory):
 
     [web]
     3.25.114.20 ansible_ssh_user=ubuntu
 
-## 2.Playbook (deploy.yml):
+#### 2.Playbook (deploy.yml):
 
     - hosts: web
     become: yes
@@ -152,26 +152,26 @@ This project demonstrates how to automate the deployment of a web application by
         ports:
           - "3000:3000"
 
-# 8. Configure Jenkins to Use Ansible
+### 8. Configure Jenkins to Use Ansible
 
-## 1.Generate SSH Key:
+#### 1.Generate SSH Key:
 
     ssh-keygen -t rsa -b 4096 -C "sivan7863@gmail.com"
     ssh-copy-id -i ~/.ssh/id_rsa.pub ubuntu@3.25.114.20
 
-## 2.Add SSH Key to Jenkins:
+#### 2.Add SSH Key to Jenkins:
 
     Go to "Manage Jenkins" -> "Manage Credentials".
     Add new credentials with ID my-ssh-credentials.
 
-# 9. Test Pipeline
+### 9. Test Pipeline
 
-## 1.Commit and Push Changes:
+#### 1.Commit and Push Changes:
     git add inventory deploy.yml
     git commit -m "Add Ansible inventory and playbook files"
     git push origin main
     
-## 2.Trigger a Build in Jenkins:
+#### 2.Trigger a Build in Jenkins:
 
 - Go to Jenkins job and click "Build Now".
 
